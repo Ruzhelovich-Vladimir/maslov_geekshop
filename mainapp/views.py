@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render
+import os
 import json
 
 def main(request):
@@ -24,7 +26,9 @@ def products(request):
 
 def contact(request):
 
-    with open('contacts.json', 'r') as f:
+    contact_filename = os.path.join(settings.BASE_DIR, 'contacts.json')
+
+    with open(contact_filename, 'r') as f:
         contacts = json.load(f)
 
     content = {
