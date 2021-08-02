@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import json
 
 def main(request):
     content = {
@@ -22,9 +23,15 @@ def products(request):
     return render(request, 'mainapp/products.html', content)
 
 def contact(request):
+
+    with open('contacts.json', 'r') as f:
+        contacts = json.load(f)
+
     content = {
-        'title': 'контакты'
+        'title': 'контакты',
+        'contacts': contacts
     }
+
     return render(request, 'mainapp/contact.html', content)
 
 def products_all(request):
