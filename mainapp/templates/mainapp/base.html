@@ -9,7 +9,7 @@
         {% endblock %}
     </title>
 	{% block css %}
-        <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 	    <link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.css' %}">
     {% endblock %}
     {% block js %}
@@ -18,6 +18,11 @@
 <body>
 	<div class="container">
 		{% block menu %}
+            <div class="hero-white">
+                    <div class="header clearfix">
+                        {% include 'mainapp/includes/inc_main_menu.html' %}
+                    </div>
+            </div>
         {% endblock %}
         {% block content %}
         {% endblock %}

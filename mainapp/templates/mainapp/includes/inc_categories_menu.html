@@ -1,11 +1,5 @@
 
 <ul class="links-menu">
-        <li>
-            <a href="{% url 'mainapp:index' %}">
-               {% if request.resolver_match.url_name == "/" %} class="active" {% endif %}
-                все
-            </a>
-        </li>
     {% for link in links_menu %}
         <li>
                <a href="{% url 'mainapp:category' link.pk %}"

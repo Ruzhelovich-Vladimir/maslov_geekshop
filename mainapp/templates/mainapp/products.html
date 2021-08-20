@@ -7,16 +7,6 @@
 	{{ block.supper }}
 {% endblock%}
 
-{% block menu%}
-<div class="hero-white">
-		<div class="header clearfix">
-			<a href="/" class="logo"></a>
-			{% include 'mainapp/includes/inc_main_menu.html' %}
-			<a href="#" class="search"></a>
-            <a href="#" class="basket"></a>
-		</div>
-</div>
-{% endblock %}
 {% block content %}
 		<div class="details">
 			<div class="links clearfix">
@@ -70,34 +60,20 @@
 					<a class="explore" href="#">показать все <img src="{% static 'img/arrow.png' %}" alt=""></a>
 				</div>
 				<div class="related-products clearfix">
-					<div class="block">
-						<a href="#"><img src="{% static 'img/product-11.jpg' %}" alt="">
-							<div class="text">
-								<img src="{% static 'img/icon-hover.png' %}" alt="img">
-								<h4>Стул повышенного качества</h4>
-								<p>Не оторваться. </p>
-							</div>
-						</a>
-					</div>
-					<div class="block">
-						<a href="#"><img src="{% static 'img/product-21.jpg' %}" alt="">
-							<div class="text">
-								<img src="{% static 'img/icon-hover.png' %}" alt="img">
-								<h4>Стул повышенного качества</h4>
-								<p>Не оторваться. </p>
-							</div>
-						</a>
-					</div>
-					<div class="block">
-						<a href="#"><img src="{% static 'img/product-31.jpg' %}" alt="">
-							<div class="text">
-								<img src="{% static 'img/icon-hover.png' %}" alt="img">
-								<h4>Стул повышенного качества</h4>
-								<p>Не оторваться. </p>
-							</div>
-						</a>
-					</div>
-
+                    {% for product in products %}
+                    <div class="block">
+                        <a href="{% url 'basket:add' product.pk %}">
+                            <div class="text">
+                                <img src="/media/{{ product.image }}" alt="{{ product.short_desk }}">
+                                <h3>Категория: {{ product.categoty.name }}</h3>
+                                <h4>Наименование: {{ product.name }}</h4>
+                                <p>Описание: {{ product.description }}</p>
+                                <p>Цена: {{ product.price }}</p>
+                                <p>Остаток: {{ product.quantity }}</p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
 				</div>
 			</div>
 		</div>
