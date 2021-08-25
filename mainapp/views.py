@@ -1,38 +1,46 @@
-from django.db.models import Sum
-from django.shortcuts import render, get_object_or_404
+import datetime
+import random
 
-from basketapp.models import Basket
+from django.shortcuts import render, get_object_or_404
+#from basketapp.models import Basket
 from mainapp.models import Product, ProductCategory
 
-def main(request):
+def get_basket(user):
+    #return Basket.objects.filter(user=user) if user.is_authenticated else []
+    return user.basket.all() if user.is_authenticated else []
 
-    basket = []
-    if request.user.is_authenticated:
-        basket = Basket.objects.filter(user=request.user)
-        qty = basket.aggregate(Sum('quantity'))['quantity__sum']
+def get_hot_product():
+    products_list = Product.objects.all()
+    return random.sample(list(products_list), 1)[0]
+
+def get_same_products(product):
+    return Product.objects.filter(category__pk=product.category.pk).exclude(pk=product.pk)[:3]
+
+def main(request):
 
     content = {
         'title': 'главная',
         'products': Product.objects.all()[:4],
-        'qty': qty
+        'basket': get_basket(user=request.user)
     }
-
     return render(request, 'mainapp/index.html', content)
 
-def products(request, pk=None):
-
+def get_links_menu():
     title = 'продукты'
-    summa = 0
     # контент для нулевой категории
     category_0 = {'pk': 0, 'name': 'все'}
     links_menu = list(ProductCategory.objects.all())
     # Добавляем виртуальную категорию
     links_menu.insert(0, category_0)
+    return links_menu
 
-    basket = []
-    if request.user.is_authenticated:
-        basket = Basket.objects.filter(user=request.user)
-        qty = Basket.objects.filter(user=request.user).aggregate(Sum('quantity'))['quantity__sum']
+
+def products(request, pk=None):
+
+    title = 'продукты'
+    category_0 = {'pk': 0, 'name': 'все'}
+    links_menu = get_links_menu()
+    basket = get_basket(user=request.user)
 
     # Если мы работаем с подменю
     if pk is not None:
@@ -48,100 +56,73 @@ def products(request, pk=None):
             'products': product_list,
             'category': category,
             'basket': basket,
-            'qty': qty
         }
         return render(request, 'mainapp/products_list.html', content)
 
-    same_products = Product.objects.all()[3:5]
+    hot_product = get_hot_product()
+    same_products = get_same_products(hot_product)
     content = {
         'title': title,
         'links_menu': links_menu,
         'same_products': same_products,
-        'qty': qty}
+        'basket': basket,
+        'hot_product': hot_product}
+
+    print(same_products)
 
     return render(request, 'mainapp/products.html', content)
 
-def category(request):
-    content = {}
-    return render(request, 'mainapp/category.html', content)
+def product(request, pk):
+
+    title = 'продукты'
+
+    content = {
+        'title': title,
+        'links_menu': get_links_menu(),
+        'product': get_object_or_404(Product, pk=pk),
+        'basket': get_basket(request.user)
+    }
+
+    return render(request, 'mainapp/product.html', content)
+
 
 def contact(request):
+
+    title = 'о нас'
+    visit_date = datetime.datetime.now()
+
+    locations = [
+        {
+            'city': 'Москва',
+            'phone': '+7 800 888 88 88',
+            'email': 'info@geekshop.ru',
+            'address': 'в пределах МКАД'
+         },
+        {
+            'city': 'Екатеринбур',
+            'phone': '+7 800 888 88 88',
+            'email': 'info@geekshop.ru',
+            'address': 'в центре'
+        },
+        {
+            'city': 'Владивосток',
+            'phone': '+7 800 888 88 88',
+            'email': 'info@geekshop.ru',
+            'address': 'прибрежная зона'
+        }
+    ]
     content = {
-        'title': 'контакты'
+        'title': title, 'visit_date': visit_date, 'locations': locations, 'basket': get_basket(user=request.user)
     }
+
     return render(request, 'mainapp/contact.html', content)
 
-def products_all(request):
+def not_found(request, exception):
+    # контроллер кастомной обработки ошибки
+    # необходтмо также прописать с диспетчере урлов на данный контроллер
+    # handler404 = 'mainapp.views.not_found'
+    return render(request=request, template_name='404.html', context={'item': 'item'}, status=404)
 
-    links_menu = [
-        {'href': 'products_all', 'name': 'все'},
-        {'href': 'products_home', 'name': 'офис'},
-        {'href': 'products_modern', 'name': 'модерн'},
-        {'href': 'products_office', 'name': 'офис'},
-        {'href': 'products_classic', 'name': 'классика'},
-    ]
-    content = {
-        'title': 'продукты',
-        'links_menu': links_menu
-    }
-    return render(request, 'mainapp/products.html', content)
 
-def products_home(request):
 
-    links_menu = [
-        {'href': 'products_all', 'name': 'все'},
-        {'href': 'products_home', 'name': 'офис'},
-        {'href': 'products_modern', 'name': 'модерн'},
-        {'href': 'products_office', 'name': 'офис'},
-        {'href': 'products_classic', 'name': 'классика'},
-    ]
-    content = {
-        'title': 'продукты',
-        'links_menu': links_menu
-    }
-    return render(request, 'mainapp/products.html', content)
 
-def products_office(request):
-
-    links_menu = [
-        {'href': 'products_all', 'name': 'все'},
-        {'href': 'products_home', 'name': 'офис'},
-        {'href': 'products_modern', 'name': 'модерн'},
-        {'href': 'products_office', 'name': 'офис'},
-        {'href': 'products_classic', 'name': 'классика'},
-    ]
-    content = {
-        'title': 'продукты',
-        'links_menu': links_menu
-    }
-    return render(request, 'mainapp/products.html', content)
-
-def products_modern(request):
-
-    links_menu = [
-        {'href': 'products_all', 'name': 'все'},
-        {'href': 'products_home', 'name': 'офис'},
-        {'href': 'products_modern', 'name': 'модерн'},
-        {'href': 'products_office', 'name': 'офис'},
-        {'href': 'products_classic', 'name': 'классика'},
-    ]
-    content = {
-        'title': 'продукты',
-        'links_menu': links_menu
-    }
-    return render(request, 'mainapp/products.html', content)
-
-def products_classic(request):
-
-    links_menu = [
-        {'href': 'products_all', 'name': 'все'},
-        {'href': 'products_home', 'name': 'офис'},
-        {'href': 'products_modern', 'name': 'модерн'},
-        {'href': 'products_office', 'name': 'офис'},
-        {'href': 'products_classic', 'name': 'классика'},
-    ]
-    content = {
-        'title': 'продукты',
-        'links_menu': links_menu
-    }
-    return render(request, 'mainapp/products.html', content)

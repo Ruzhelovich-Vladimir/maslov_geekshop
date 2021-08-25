@@ -11,6 +11,8 @@ def login(request):
     title = 'вход'
     # Активируем форму аунтентификацию
     login_from = ShopUserLoginForm(data=request.POST)
+    # Забираем параметр по ключу, для страницы обратного перехода
+    next_url = request.GET.get('next', '')
     if request.method == 'POST' and login_from.is_valid():
         username = request.POST.get('username')
         password = request.POST['password']
@@ -19,9 +21,13 @@ def login(request):
         if user and user.is_active:
             # auth.login пропишет пользователя в объект запроса request.
             auth.login(request, user)
+            #Если 'next' был в запросе POST
+            if 'next' in request.POST.keys():
+                # Возвращаем пользователя на страницу по ключу "next"
+                return HttpResponseRedirect(request.POST['next'])
             # возвращает на главную страницу
             return HttpResponseRedirect(reverse('main'))
-    content = {'title': title, 'login_form': login_from}
+    content = {'title': title, 'login_form': login_from, 'next': next_url}
     return render(request, 'authapp/login.html', content)
 
 def logout(request):
