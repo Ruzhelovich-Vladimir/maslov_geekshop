@@ -68,7 +68,7 @@ def products(request, pk=None):
         'basket': basket,
         'hot_product': hot_product}
 
-    print(same_products)
+    #print(same_products)
 
     return render(request, 'mainapp/products.html', content)
 

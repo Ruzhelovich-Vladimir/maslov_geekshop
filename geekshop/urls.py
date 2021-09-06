@@ -12,7 +12,8 @@ urlpatterns = [
     path('auth/', include('authapp.urls', namespace='auth')),
     path('basket/', include('basketapp.urls', namespace='basket')),
     path('contact/', mainapp.contact, name='contact'),
-    path('admin/', admin.site.urls),
+    path('admin/', include('adminapp.urls', namespace='admin')),
+    path('django_admin/', admin.site.urls),
 ]
 
 handler404 = 'mainapp.views.not_found'

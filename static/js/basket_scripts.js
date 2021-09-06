@@ -26,34 +26,35 @@ window.onload = function () {
     */
 
     // добавляем ajax-обработчик для обновления количества товара
-    // Обработчик редактирования/изменения количества элемента
     $('.basket_list').on('click', 'input[type="number"]', function () {
         let target_href = event.target;
-        let name = $(this).parent().attr('id');
+
         if (target_href) {
             $.ajax({
-                url: "/basket/edit/" + name + "/" + target_href.value + "/",
+                url: "/basket/edit/" + target_href.name + "/" + target_href.value + "/",
+
                 success: function (data) {
                     $('.basket_list').html(data.result);
                     console.log('ajax done');
                 },
             });
+
         }
         event.preventDefault();
     });
-    // Обработчик удаление элемента
-    $('.basket_list').on('click', '.btn', function () {
-        // Получаем атрибут с кодом номенклатуры
-        let name = $(this).parent().attr('id');
-        if (name) {
+
+    $('.basket_list').on('click', '.button-remove', function(){
+        let pk = $(this).attr('data-pk');
+        if(pk){
             $.ajax({
-                url: "/basket/delete/" + name + "/",
-                success: function (data) {
+                url: "/basket/remove/ajax/" + pk + "/",
+
+                success: function(data){
                     $('.basket_list').html(data.result);
-                    console.log('ajax done');
-                },
+                }
             });
         }
-        event.preventDefault();
+        return;
     });
+
 };

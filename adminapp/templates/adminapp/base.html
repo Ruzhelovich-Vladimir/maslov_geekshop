@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}
+            {{ title|title }}
+        {% endblock title %}
+    </title>
+    {% block css %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css/' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'fomts/font-awesome/css/font-awecome.css' %}">
+    {% endblock css %}
+    {% block js %}
+        <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+    {% endblock js %}
+</head>
+<body>
+ <body>
+  <div class="admin_container">
+    <div class="h2 text-center head">
+      Админка
+    </div>
+    {% block menu %}
+      <div class="admin_menu">
+        {% include 'adminapp/includes/inc_menu.html' %}
+      </div>
+    {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+  </div>
+</body>
+</html>
