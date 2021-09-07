@@ -18,6 +18,7 @@ class Product(models.Model):
     description = models.TextField(verbose_name='краткое описание', blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name='цена')
     quantity = models.PositiveIntegerField(default=0, verbose_name='количество на скаде')
+    is_active = models.BooleanField(default=True, verbose_name='активна')
 
     def __str__(self):
         return f'{self.name} / {self.category.name}'

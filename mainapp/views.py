@@ -1,6 +1,7 @@
 import datetime
 import random
 
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, get_object_or_404
 #from basketapp.models import Basket
 from mainapp.models import Product, ProductCategory
@@ -35,7 +36,7 @@ def get_links_menu():
     return links_menu
 
 
-def products(request, pk=None):
+def products(request, pk=None, page=1):
 
     title = 'продукты'
     category_0 = {'pk': 0, 'name': 'все'}
@@ -50,10 +51,25 @@ def products(request, pk=None):
         else:
             category = get_object_or_404(ProductCategory, pk=pk)
             product_list = Product.objects.filter(category__pk=category.pk)
+
+        # Объект пагинатор, "2" - кол-во товаров на странице
+        paginator = Paginator(product_list, 2)
+        try:
+            # Попытка получить страницу
+            product_paginator = paginator.page(page)
+        except PageNotAnInteger:
+            # Если ошибка не число, то переход на первую страницу
+            product_paginator = paginator.page(1)
+        except EmptyPage:
+            # Если пустая страницаошибка не число, то переход на первую страницу
+            product_paginator = paginator.page(paginator.num_pages)
+
+
+
         content = {
             'title': title,
             'links_menu': links_menu,
-            'products': product_list,
+            'products': product_paginator,
             'category': category,
             'basket': basket,
         }
