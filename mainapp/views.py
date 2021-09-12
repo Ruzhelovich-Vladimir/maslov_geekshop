@@ -53,7 +53,7 @@ def products(request, pk=None, page=1):
             product_list = Product.objects.filter(category__pk=category.pk)
 
         # Объект пагинатор, "2" - кол-во товаров на странице
-        paginator = Paginator(product_list, 2)
+        paginator = Paginator(product_list, 6)
         try:
             # Попытка получить страницу
             product_paginator = paginator.page(page)
@@ -63,8 +63,6 @@ def products(request, pk=None, page=1):
         except EmptyPage:
             # Если пустая страницаошибка не число, то переход на первую страницу
             product_paginator = paginator.page(paginator.num_pages)
-
-
 
         content = {
             'title': title,

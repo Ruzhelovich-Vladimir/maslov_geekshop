@@ -1,18 +1,18 @@
 {% extends 'adminapp/base.html' %}
 {% load static %}
+{% load my_tags %}
 
 {% block content %}
   <div class="products_list">
     <button class="new_product">
-      <a href={% url 'admin:product_create' category.pk %}>
+      <a href={% url 'admin:product_create' objects.0.category.pk %}>
         новый продукт
       </a>
     </button>
-
     {% for object in objects %}
       <div class="product_record {% if not object.is_active %} not_active {% endif %} ">
         <img
-          src="/media/{{object.image|default:'products_images/default.jpg'}}"
+          src="{{ object.image|media_folder_product }}"
           alt="{{ object.name }}">
         <div class="product_name">
           {{ object.name|title }}
@@ -28,9 +28,9 @@
               редактировать
             </a>
           </button>
-          <button>
+          <button {% if object.is_active %} class="btn btn-danger" {% else %} class="btn-success" {% endif %}>
             <a href={% url 'admin:product_delete' object.pk %}>
-              удалить
+              {% if object.is_active %} удалить {% else %}восстановить{% endif %}
             </a>
           </button>
         </div>

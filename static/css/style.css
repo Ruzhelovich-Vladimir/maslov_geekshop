@@ -97,6 +97,8 @@ html, body {
 
 .products_list {
     margin-left: 250px;
+    width: 1000px;
+    height: 600px;
 }
 
 .products_list .new_product {
@@ -118,13 +120,12 @@ html, body {
 }
 
 .product_record {
-    margin: 250px auto;
+    margin: 50px auto;
     width: 1000px;
-    height: 600px;
+    height: 60px;
 }
 
-
-.product_record.not_active {
+.product_record.not_active:not(.product_actions)  {
     opacity: 0.5;
 }
 
@@ -563,7 +564,9 @@ html, body {
 
 .login,
 .category_update,
-.product_update{
+.product_update,
+.form_update
+{
     background: #fff;
     border: 1px solid #eaeaea;
     border-radius: 25px;

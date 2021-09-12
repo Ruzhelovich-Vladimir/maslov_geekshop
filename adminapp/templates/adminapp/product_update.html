@@ -2,13 +2,21 @@
 {% load static %}
 
 {% block content %}
-    <div class="product_update">
+   <div class="form_update">
         <div class="h2 text-center head">
             {{ title|title }}
         </div>
         <form class="form-horizontal" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ update_form.as_p }}
+{#            {{ form.as_p }}#}
+            {% for v_form in form %}
+                {% if v_form.name == 'image' %}
+                    {{ v_form.image }}
+                    <img src="/media/{{ form.instance.image.url|default:'products_images/default.jpg' }}"
+                            alt="{{ object.name }}">
+                {% endif %}
+                <p>{{ v_form }}</p>
+            {% endfor %}
             <input type="submit" class="form-control" value="сохранить">
         </form>
         <button class="btn btn-round form-control last">
