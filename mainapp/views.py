@@ -6,9 +6,10 @@ from django.shortcuts import render, get_object_or_404
 #from basketapp.models import Basket
 from mainapp.models import Product, ProductCategory
 
-def get_basket(user):
-    #return Basket.objects.filter(user=user) if user.is_authenticated else []
-    return user.basket.all() if user.is_authenticated else []
+# Карзина добавлена в контекстный процессор
+# def get_basket(user):
+#     #return Basket.objects.filter(user=user) if user.is_authenticated else []
+#     return user.basket.all() if user.is_authenticated else []
 
 def get_hot_product():
     products_list = Product.objects.all()
@@ -22,7 +23,6 @@ def main(request):
     content = {
         'title': 'главная',
         'products': Product.objects.all()[:4],
-        'basket': get_basket(user=request.user)
     }
     return render(request, 'mainapp/index.html', content)
 
@@ -41,7 +41,7 @@ def products(request, pk=None, page=1):
     title = 'продукты'
     category_0 = {'pk': 0, 'name': 'все'}
     links_menu = get_links_menu()
-    basket = get_basket(user=request.user)
+    # basket = get_basket(user=request.user)
 
     # Если мы работаем с подменю
     if pk is not None:
@@ -69,7 +69,6 @@ def products(request, pk=None, page=1):
             'links_menu': links_menu,
             'products': product_paginator,
             'category': category,
-            'basket': basket,
         }
         return render(request, 'mainapp/products_list.html', content)
 
@@ -79,7 +78,6 @@ def products(request, pk=None, page=1):
         'title': title,
         'links_menu': links_menu,
         'same_products': same_products,
-        'basket': basket,
         'hot_product': hot_product}
 
     #print(same_products)
@@ -94,7 +92,6 @@ def product(request, pk):
         'title': title,
         'links_menu': get_links_menu(),
         'product': get_object_or_404(Product, pk=pk),
-        'basket': get_basket(request.user)
     }
 
     return render(request, 'mainapp/product.html', content)
@@ -126,7 +123,7 @@ def contact(request):
         }
     ]
     content = {
-        'title': title, 'visit_date': visit_date, 'locations': locations, 'basket': get_basket(user=request.user)
+        'title': title, 'visit_date': visit_date, 'locations': locations
     }
 
     return render(request, 'mainapp/contact.html', content)

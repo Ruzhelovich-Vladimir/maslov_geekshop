@@ -1,10 +1,37 @@
+from django.conf import settings
 from django.contrib import auth
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.urls import reverse
 
 from authapp.forms import ShopUserLoginForm, ShopUserRegisterForm, ShopUserEditForm
+from authapp.models import ShopUser
+
+
+def send_verify_email(user):
+    verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
+    subject = f'подтверждение учётной записи {user.username}'
+
+    message = f'Для подтверждения перейдите по ссылке: {settings.DOMAIN}{verify_link}'
+
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+def verify(request, email, activation_key):
+
+    print(email, activation_key)
+    try:
+        user = get_object_or_404(ShopUser, email=email, activation_key=activation_key)
+        if not user.is_activation_key_expired():
+            user.is_active = True
+            user.activation_key = None
+            user.save()
+            auth.login(request, user)
+            return render(request, 'authapp/verification.html')
+    except Exception as ex:
+        return HttpResponseRedirect(reverse('main'))
 
 
 def login(request):
@@ -43,7 +70,8 @@ def register(request):
         register_form = ShopUserRegisterForm(request.POST, request.FILES)
         if register_form.is_valid():
             # Если все хорошо, сохраняем пользователя и переходим на страницу аунтентификации
-            register_form.save()
+            user = register_form.save()
+            send_verify_email(user=user)
             return HttpResponseRedirect(reverse('auth:login'))
     else:
         # В противном случае ототажаем форому регистрации и невалидными ошибами

@@ -7,6 +7,8 @@ from django.urls import reverse
 from basketapp.models import Basket
 from mainapp.models import Product
 
+#TODO Перестал работать ajax - разобраться.
+
 def __get_basket_html_JsonResponse(request):
     # Получаю карзины всех товаров
     basket_items = Basket.objects.filter(user=request.user).order_by('product__category')

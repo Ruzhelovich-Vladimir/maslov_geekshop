@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'mainapp.context_processor.basket',
             ],
         },
     },
@@ -141,3 +142,18 @@ MEDIA_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/auth/login'
+
+DOMAIN = 'http://localhost:8000'
+EMAIL_SERVER = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'geekshop@local'
+EMAIL_PASSWORD = 'geekshop'
+EMAIL_SSL = False
+
+#EMAIL_HOST_USER, EMAIL_PASSWORD = None, None
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'tmp/email-messages/'
+# sudo python -m smtpd -n -c DebuggingServer localhost:25 
+
+
